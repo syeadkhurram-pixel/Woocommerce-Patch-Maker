@@ -1,5 +1,4 @@
 jQuery(document).ready(function($){
-	console.log("🚀 Patch Maker BY Nexstair!");
 	var isRender = Boolean(is_render);
 	
 	
@@ -8,7 +7,6 @@ jQuery(document).ready(function($){
 		
 		let title = $(this).attr('alt');
 		
-		console.log('Title: ' , title)
 		
 		let dk_var_preview = $('.dk_var_preview');
 		
@@ -29,7 +27,7 @@ jQuery(document).ready(function($){
 	
 	
  	setTimeout(async function() {
-		//console.log("Window Loaded!");
+		
 		const CANVAS = document.createElement('canvas');
 
 		CANVAS.className="main-canvasx";
@@ -43,7 +41,6 @@ jQuery(document).ready(function($){
 		
 			$('[name="patch-color"],[name="patch-shape"]').on('change' , function(){
 				
-				//console.log("Change Detected:" , $(this).val());
 				
 				if(!$('[name="patch-color"]:checked').length){
 					
@@ -84,11 +81,9 @@ jQuery(document).ready(function($){
 				let patch_color = $('[name="patch-color"]:checked').val();
 				let patch_shape = $('[name="patch-shape"]:checked').val();
 				
-				console.log('🕛 Before Processing::waitng for canvas');
 				
 				const CANVAS_DRAW =  await draw_canvas(CANVAS);
 				
-				console.log("✅ Canvas Done..");
 				
 				CANVAS.style.display = "block";
 				
@@ -121,7 +116,7 @@ jQuery(document).ready(function($){
 				
 					$('#image_data').val(ImageProcess.exportImage(image))
 
-					console.log("✅ Image Exported!");
+					
 					
 					 button.off('click');
         
@@ -143,7 +138,7 @@ jQuery(document).ready(function($){
 	
 
 	function process_canvas(patch_color,patch_shape,CANVAS_DRAW){
-// 		console.log("Width Calculations: " , CANVAS_DRAW.width+'px' , patch_shape);
+
 		if(!isRender) return;
 		
 		var selectedData = get_selected_patch(patch_color , patch_shape);
@@ -201,7 +196,6 @@ jQuery(document).ready(function($){
 			
 		}
 		
-// 		console.log('Patch Width:', patchWidth);
 		
 		if(!ImageProcess){
 			
@@ -220,7 +214,6 @@ jQuery(document).ready(function($){
 
 	
 async function draw_canvas(CANVAS) {
-	console.log("⏳ Drawing Canvas");
 	return new Promise((resolve) => {
 		
 		var checkLoadingComplete = setInterval(function() {
@@ -237,7 +230,6 @@ async function draw_canvas(CANVAS) {
 				
 				CANVAS.height = gallery_element.innerHeight();
 				
-				console.log("✅ Loading is completed!!!", {width: CANVAS.width, height: CANVAS.height});
 				
 				gallery_element.append(CANVAS);
 				
@@ -253,7 +245,6 @@ async function draw_canvas(CANVAS) {
 
 function get_selected_patch(color , shape){
 	
-// 	console.log("Selected:" , color , shape);
 	
 	var patchData = data.patch_data;
 	
@@ -262,7 +253,6 @@ function get_selected_patch(color , shape){
 }
 
 function drawImage(src , canvas){
-// 	console.log("drawImage" , src);
 	var imageProcess =  new ImageProcessor(src , canvas);
 	
 	return imageProcess;
