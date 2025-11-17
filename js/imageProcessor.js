@@ -20,19 +20,17 @@ class ImageProcessor {
 		this.handleSize = 10;
         this.rotationHandleSize = 20;
 
-        // Initialize image2 properties
+        
         this.image2X = 0;
         this.image2Y = 0;
         this.image2Width = 0;
         this.image2Height = 0;
 		this.imageAngle = 0;
 		
-// 		Patch Settings
-		console.log('ℹ️ CLASS Canvas Width:' , this.canvas.width);
 		this.patchWidth = this.canvas.width * 0.33;
 		this.patchHeight = this.canvas.width * 0.33;
         
-		//Settings
+		
 		this.keyMaps = new Map([
 			['ArrowUp', () => this.image2Y -= 1],
 			['ArrowDown', () => this.image2Y += 1],
@@ -40,14 +38,9 @@ class ImageProcessor {
 			['ArrowRight', () => this.image2X += 1]
 		]);
 		
-		//Exporting
 		this.offCanvas = document.createElement('canvas');
 		this.offContext = this.offCanvas.getContext('2d');
 		
-		
-		
-		
-		//Iniit Evetns
 		this.init();
     }
 	
@@ -61,10 +54,8 @@ class ImageProcessor {
 	}
 	
 	exportImage(background){
-		console.log("🚀 CLASS::Exporting Image...");
 		this.offCanvas.width =  this.canvas.width;
 		this.offCanvas.height = this.canvas.height;
-		//console.log('Exported Art Board NEW:',this.offCanvas.width , this.offCanvas.height);
 		if(this.image2)
 		this.hideControls();
 		
@@ -80,7 +71,6 @@ class ImageProcessor {
 
 
     processImage() {
-		console.log('🚀 CLASS::Image Processing started!');
 		const aspectRatio = this.image.width / this.image.height;
 
 		let width = this.patchWidth;
@@ -102,8 +92,6 @@ class ImageProcessor {
 		this.context.drawImage(this.image, x, y, this.imageWidth, this.imageHeight);
 
 		if(this.image2) this.redraw();
-		console.log('✅CLASS::Image Processing  Done!');
-  	//this.drawImage('https://www.nexstair.com/wordpress/leather/wp-content/uploads/2024/08/services.png')
 
     }
 
@@ -164,21 +152,20 @@ class ImageProcessor {
                     const green = data[i + 1];
                     const blue = data[i + 2];
 
-                    // Calculate brightness of the pixel (0 to 255)
                     const brightness = red * 0.3 + green * 0.59 + blue * 0.11;
 
                     if (brightness > 140) {
-                        // Make light colors more transparent
-                        data[i + 3] = 0;  // Set alpha to 0 (fully transparent)
+                        
+                        data[i + 3] = 0;  
                     } else {
-                        // Convert to black (or dark shade)
+                        
                         data[i] = 30;
                         data[i + 1] = 30;
                         data[i + 2] = 30;
                     }
                 }
 
-                // Update the canvas with the new image data
+               
                 ctx.putImageData(imageData, 0, 0);
 		
 		return canvas;
@@ -201,7 +188,6 @@ class ImageProcessor {
 	 update(image , canvas){
 		 
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		console.log('⏳ CLASS::Updating Canvas....' , this.canvas.width , this.canvas.height);
 		this.image.src = image;
 	}
 
@@ -209,7 +195,6 @@ class ImageProcessor {
 
     redraw() {
 		
-		//console.log(this.image2);
 		
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		
@@ -223,8 +208,6 @@ class ImageProcessor {
         this.context.drawImage(this.image2, -this.image2Width / 2, -this.image2Height / 2, this.image2Width, this.image2Height);
 
 		this.context.restore();
-		console.log('🎨 CLASS::Redrawing Image');
-        // Draw resize handles
         if(this.image2){
         	this.drawHandles();
 			this.drawFrame();
@@ -234,10 +217,10 @@ class ImageProcessor {
 	
 	drawHandles() {
         this.handles = [
-            { x: this.image2X - 20, y: this.image2Y - 20 }, // Top-left
-            { x: this.image2X + this.image2Width + 20, y: this.image2Y - 20}, // Top-right
-            { x: this.image2X + this.image2Width + 20, y: this.image2Y + this.image2Height + 20 }, // Bottom-right
-            { x: this.image2X - 20, y: this.image2Y + this.image2Height + 20 } // Bottom-left
+            { x: this.image2X - 20, y: this.image2Y - 20 }, 
+            { x: this.image2X + this.image2Width + 20, y: this.image2Y - 20}, 
+            { x: this.image2X + this.image2Width + 20, y: this.image2Y + this.image2Height + 20 }, 
+            { x: this.image2X - 20, y: this.image2Y + this.image2Height + 20 } 
         ];
 		
 
@@ -247,10 +230,10 @@ class ImageProcessor {
     }
 	
 	drawCircle( x, y, radius) {
-		this.context.beginPath(); // Start a new path
-		this.context.arc(x, y, radius, 0, 2 * Math.PI); // Draw the circle
-		this.context.fillStyle = this.handleFillStyle; // Set the fill color
-		this.context.fill(); // Fill the circle with the fill color
+		this.context.beginPath(); 
+		this.context.arc(x, y, radius, 0, 2 * Math.PI); 
+		this.context.fillStyle = this.handleFillStyle; 
+		this.context.fill(); 
 		
 }
 
@@ -261,7 +244,6 @@ class ImageProcessor {
         const rotationHandleY = centerY + (this.image2Width / 2 + 30) * Math.sin(this.imageAngle * Math.PI / 180);
 
         this.rotationHandle = { x: rotationHandleX, y: rotationHandleY };
-        //console.log('Rotational Angle: ' , this.rotationHandle);
         this.context.fillStyle = this.handleFillStyle;
         this.context.fillRect(this.rotationHandle.x - this.rotationHandleSize / 2, this.rotationHandle.y - this.rotationHandleSize / 2, this.rotationHandleSize, this.rotationHandleSize);
     }
@@ -280,9 +262,6 @@ class ImageProcessor {
                 this.startImage2Y = this.image2Y;
                 this.startWidth = this.image2Width;
                 this.startHeight = this.image2Height;
-// 				this.context.fillStyle = "red";
-// 				this.context.fill();
-// 				this.drawHandles();
             }
         });
 
@@ -320,25 +299,25 @@ class ImageProcessor {
             const deltaX = mousePos.x - this.startMouseX;
             const deltaY = mousePos.y - this.startMouseY;
 
-            if (this.dragHandle === 0) { // Top-left
+            if (this.dragHandle === 0) { 
                 const newWidth = Math.max(this.startWidth - deltaX, 10);
                 const newHeight = Math.max(newWidth / this.aspectRatio, 10);
                 this.image2X = this.startImage2X + (this.startWidth - newWidth);
                 this.image2Y = this.startImage2Y + (this.startHeight - newHeight);
                 this.image2Width = newWidth;
                 this.image2Height = newHeight;
-            } else if (this.dragHandle === 1) { // Top-right
+            } else if (this.dragHandle === 1) { 
                 const newWidth = Math.max(this.startWidth + deltaX, 10);
                 const newHeight = Math.max(newWidth / this.aspectRatio, 10);
                 this.image2Y = this.startImage2Y + (this.startHeight - newHeight);
                 this.image2Width = newWidth;
                 this.image2Height = newHeight;
-            } else if (this.dragHandle === 2) { // Bottom-right
+            } else if (this.dragHandle === 2) { 
                 const newWidth = Math.max(this.startWidth + deltaX, 10);
                 const newHeight = Math.max(newWidth / this.aspectRatio, 10);
                 this.image2Width = newWidth;
                 this.image2Height = newHeight;
-            } else if (this.dragHandle === 3) { // Bottom-left
+            } else if (this.dragHandle === 3) { 
                 const newWidth = Math.max(this.startWidth - deltaX, 10);
                 const newHeight = Math.max(newWidth / this.aspectRatio, 10);
                 this.image2X = this.startImage2X + (this.startWidth - newWidth);
@@ -365,7 +344,6 @@ class ImageProcessor {
             let cursor = 'default';
             this.handles.forEach(handle => {
                 if (this.isOverHandle(mousePos, handle)) {
-					console.log("Over Handle:" ,mousePos , handle);
                     cursor = 'nwse-resize';
                 }
             });
@@ -394,7 +372,7 @@ class ImageProcessor {
 
     isOverHandle(mousePos, handle) {
 		if(!this.image2) return false;
-		//console.log(handle);
+		
         return mousePos.x >= handle.x - 50 / 2 &&
                mousePos.x <= handle.x + 50 / 2 &&
                mousePos.y >= handle.y - 50 / 2 &&
@@ -406,11 +384,11 @@ class ImageProcessor {
         this.context.lineWidth = 2;
 
         this.context.beginPath();
-        this.context.moveTo(this.handles[0].x, this.handles[0].y); // Top-left
-        this.context.lineTo(this.handles[1].x, this.handles[1].y); // Top-right
-        this.context.lineTo(this.handles[2].x, this.handles[2].y); // Bottom-right
-        this.context.lineTo(this.handles[3].x, this.handles[3].y); // Bottom-left
-        this.context.closePath(); // Back to top-left
+        this.context.moveTo(this.handles[0].x, this.handles[0].y); 
+        this.context.lineTo(this.handles[1].x, this.handles[1].y); 
+        this.context.lineTo(this.handles[2].x, this.handles[2].y); 
+        this.context.lineTo(this.handles[3].x, this.handles[3].y); 
+        this.context.closePath(); 
         this.context.stroke();
     }
 	
@@ -427,7 +405,6 @@ class ImageProcessor {
 				
         });
 		
-		console.log(isOverHandle);
 		
 		if(this.isOverImage(this.getMousePos(e)) || isOverHandle)
 			this.showControls();
@@ -444,46 +421,39 @@ class ImageProcessor {
 	}
 	
 	getTouchPos(e) {
-		//console.log("Touch Event" , e);
     const rect = this.canvas.getBoundingClientRect();
-    const touch = e.touches[0] || e.changedTouches[0]; // Get the first touch point
+    const touch = e.touches[0] || e.changedTouches[0]; 
     return {
-        x: touch.clientX ,//- rect.left,
-        y: touch.clientY //- rect.top
+        x: touch.clientX ,
+        y: touch.clientY 
     };
 }
 
-// Debugging: Draws a red dot at the touch position
 drawDebugPoint(x, y) {
     this.context.fillStyle = "red";
     this.context.beginPath();
-    this.context.arc(x, y, 5, 0, Math.PI * 2); // Draw a small circle (5px radius)
+    this.context.arc(x, y, 5, 0, Math.PI * 2); 
     this.context.fill();
 }
 
-// Touch Events Handlers
 onTouchStart(e) {
-    e.preventDefault(); // Prevent scrolling
+    e.preventDefault(); 
     const pos = this.getTouchPos(e);
-	//this.onClick({ clientX: pos.x, clientY: pos.y });
-   // this.drawDebugPoint(pos.x, pos.y);
+	
     this.onMouseDown(this.convertTouchEvent(e));
 }
 
 onTouchMove(e) {
-    e.preventDefault(); // Prevent scrolling
+    e.preventDefault();
     const pos = this.getTouchPos(e);
-  //  this.drawDebugPoint(pos.x, pos.y);
     this.onMouseMove(this.convertTouchEvent(e));
 }
 
 onTouchEnd(e) {
     const pos = this.getTouchPos(e);
-     // Manually call onClick
     this.onMouseUp(this.convertTouchEvent(e));
 }
 
-// Converts TouchEvent to a MouseEvent-like Object
 convertTouchEvent(e) {
     const touchPos = this.getTouchPos(e);
     return {
@@ -495,8 +465,7 @@ convertTouchEvent(e) {
 	
 
 	init(){
-		console.log("🕛CLASS::ImageProcessor: Initialized");
-		//console.log(this);
+		
 		
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		
@@ -508,7 +477,6 @@ convertTouchEvent(e) {
 		this.canvas.addEventListener('click', this.onClick.bind(this));
 		this.canvas.addEventListener('keydown', (e) => this.handleMovement(e));
 		
-		// Touch Events (for mobile support)
 		this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
 		this.canvas.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
 		this.canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
