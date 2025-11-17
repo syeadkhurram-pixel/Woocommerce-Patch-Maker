@@ -1,0 +1,162 @@
+label.patch-item::before {
+    content: attr(data-shape);
+    width: auto;
+    min-width: 50px;
+    height: 30px;
+    background: #333333;
+    position: absolute;
+    top: -25px;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 12px;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+	visibility: hidden;
+	opacity:0;
+	transition: .2s ease;
+}
+
+label.patch-item:hover::before{
+	top: -35px;
+	opacity: 1;
+	visibility: visible;
+}
+
+label.patch-item.patch-color::before{
+	content: attr(data-color);
+}
+
+
+label.patch-item{
+	position: relative;
+}
+
+label.patch-item.patch-color img {
+    border-radius: 5px;
+	height:100%
+}
+
+
+/*  */
+canvas.main-canvasx {
+/*     width: -webkit-fill-available; */
+	transform: translateY(12px);
+}
+textarea#name_field {
+    resize: vertical;
+}
+
+label.patch-item.patch-shape img {
+    object-fit: contain;
+}
+
+.wpgs-for .slick-arrow {
+    display: none !important;
+}
+
+select#logo_sizing {
+    height: 50px;
+}
+
+p#image_data_field {
+    display: none;
+}
+
+section.related.products {
+    display: none !important;
+}
+
+.single .single_variation_wrap h5 {
+    color: #111827;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+	font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif !important;
+}
+
+p#image_data_field {}
+
+[for="patch_image"] {
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
+canvas.main-canvasx {
+    position: absolute;
+    top: 0;
+    left: 0;
+	z-index:1;
+	outline: none !important;
+}
+
+.patch-item.patch-color {
+    width: 60px;
+    height: 60px;
+    background: gray;
+    font-size: 0;
+    margin: 0 5px 5px 0;
+      border-radius: 5px;
+	background: #fff;
+	cursor: pointer;
+}
+
+.patch-item.patch-shape {
+	width: 60px;
+    height: 60px;
+	border: 1px solid #e5e5e5;
+	padding: 2px;
+	display: flex;
+    font-size: 0;
+    margin: 0 5px 5px 0;
+    border-radius: 5px;
+	background: #fff;
+	cursor: pointer;
+}
+
+label.patch-item.patch-shape img {
+    box-shadow: none;
+    filter: brightness(0) contrast(1) hue-rotate(64deg);
+}
+
+
+.patch-selections {
+    display: flex;
+	flex-wrap: wrap;
+}
+
+.patch-selections:first-child{
+	margin-bottom: 20px;
+}
+
+[data-color="Beige"] {
+    background: #bea48b !important;
+}
+
+[data-color="Orange"] {
+    background: #de7711 !important;
+}
+
+[data-color="Rawhide"] {
+    background: #b86b4c !important;
+}
+
+input[type=radio]:checked + label {
+    border: 2px solid #b9d9ff;
+}
+
+input[name="patch-shape"] {
+    position: absolute;
+    opacity: 0;
+    z-index: -10;
+}
+
+input[name="patch-color"] {
+    position: absolute;
+    opacity: 0;
+    z-index: -10;
+}
