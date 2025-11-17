@@ -7,7 +7,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly
+    exit;
 }
 
 
@@ -19,10 +19,10 @@ function create_patch_selections_table() {
     $table_name = $wpdb->prefix . 'patch_selections';
     $table_name2 = $wpdb->prefix . 'patch_options';
     
-    // Set the character set and collation
+    
     $charset_collate = $wpdb->get_charset_collate();
 
-    // SQL statement to create the table
+
     $sql = "CREATE TABLE IF NOT EXISTS $table_name (
         ID mediumint(9) NOT NULL AUTO_INCREMENT,
         patch_type varchar(255) NOT NULL,
@@ -33,7 +33,6 @@ function create_patch_selections_table() {
     ) $charset_collate;";
 
 
-    // SQL statement to create the table
     $sql2 = "CREATE TABLE IF NOT EXISTS $table_name2 (
         ID mediumint(9) NOT NULL AUTO_INCREMENT,
         type varchar(255) NOT NULL,
@@ -42,7 +41,6 @@ function create_patch_selections_table() {
         PRIMARY KEY  (ID)
     ) $charset_collate;";
 
-    // Execute the query using dbDelta
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql1);
     dbDelta( $sql2 );
@@ -51,27 +49,24 @@ function create_patch_selections_table() {
 }
 
 
-// Registering FrontEnd Scripts
 function my_plugin_enqueue_scripts() {
-    // Register the script
       wp_register_script(
-        'imageProcessor', // Handle
-        plugin_dir_url( __FILE__ ) . 'js/imageProcessor.js', // Script file path
-        array(), // Dependencies (optional)
-        '1.0.0', // Version (optional)
-        true // Load in footer (optional)
+        'imageProcessor', 
+        plugin_dir_url( __FILE__ ) . 'js/imageProcessor.js', 
+        array(), 
+        '1.0.0', 
+        true 
     );
     wp_register_script(
-        'selection_handler', // Handle
-        plugin_dir_url( __FILE__ ) . 'js/handle-selections.js', // Script file path
-        array( 'jquery' ), // Dependencies (optional)
-        '1.0.0', // Version (optional)
-        true // Load in footer (optional)
+        'selection_handler',
+        plugin_dir_url( __FILE__ ) . 'js/handle-selections.js',
+        array( 'jquery' ), 
+        '1.0.0', 
+        true 
     );
 	
 	
 
-    // Enqueue the script
     wp_enqueue_script( 'imageProcessor' );
     wp_enqueue_script( 'selection_handler' );
 	wp_enqueue_style( 'swatches___css', plugin_dir_url( __FILE__ ) . 'css/style.css' );
@@ -80,7 +75,6 @@ function my_plugin_enqueue_scripts() {
 
 add_action( 'wp_enqueue_scripts', 'my_plugin_enqueue_scripts' );
 
-// Hook to add the admin menu
 add_action( 'admin_menu', 'patch_maker_add_admin_menu' );
 
 function patch_maker_add_admin_menu() {
@@ -89,17 +83,14 @@ function patch_maker_add_admin_menu() {
     //add_submenu_page( 'patch-options', 'Patch Selections', 'Patch Selections', 'manage_options', 'patch-selections', 'patch_selections_page' );
 }
 
-// Option Page for Patch Options
 function patch_options_page() {
     global $wpdb;
 
-    // Handle form submission for inserting data into patch_options
     if ( isset( $_POST['submit_patch_option'] ) ) {
         $patch_type = sanitize_text_field( $_POST['patch_type'] );
         $patch_shape_name = sanitize_text_field( $_POST['patch_shape_name'] );
-//         $patch_shape_image = sanitize_text_field( $_POST['shape_thumbnail'] );
 		
-		// Handle file upload
+		
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -107,7 +98,6 @@ function patch_options_page() {
 		 $uploadedfile = $_FILES['shape_thumbnail'];
          $upload_overrides = array( 'test_form' => false );
 		
-		// Ensure directory exists
         $upload_dir = wp_upload_dir();
         $patch_upload_dir = $upload_dir['basedir'] . '/patch_uploads/options_attachments';
         if ( ! file_exists( $patch_upload_dir ) ) {
@@ -127,10 +117,8 @@ function patch_options_page() {
 
             $thumbnail_id = wp_insert_attachment( $attachment, $movefile['file'] );
 
-            // Include image.php
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-            // Generate the metadata for the attachment, and update the database record.
             $attach_data = wp_generate_attachment_metadata( $thumbnail_id, $movefile['file'] );
             wp_update_attachment_metadata( $thumbnail_id, $attach_data );
 
@@ -152,10 +140,9 @@ function patch_options_page() {
 		}
     }
 
-    // Fetch all patch options data
     $patch_options = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}patch_options" );
 
-    // Display the form and table
+    
     ?>
     <div class="wrap">
         <h1>Patch Options</h1>
@@ -216,17 +203,14 @@ function patch_options_page() {
     <?php
 }
 
-// Option Page for Patch Selections
 function patch_selections_page() {
     global $wpdb;
 
-    // Handle file upload and form submission for inserting data into patch_selections
     if ( isset( $_POST['submit_patch_selection'] ) ) {
         $patch_type = sanitize_text_field( $_POST['patch_type'] );
         $patch_shape = sanitize_text_field( $_POST['patch_shape'] );
         $patch_color = sanitize_text_field( $_POST['patch_color'] );
 
-        // Handle file upload
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -234,7 +218,6 @@ function patch_selections_page() {
         $uploadedfile = $_FILES['patch_thumbnail'];
         $upload_overrides = array( 'test_form' => false );
         
-        // Ensure directory exists
         $upload_dir = wp_upload_dir();
         $patch_upload_dir = $upload_dir['basedir'] . '/patch_uploads';
         if ( ! file_exists( $patch_upload_dir ) ) {
@@ -254,14 +237,11 @@ function patch_selections_page() {
 
             $thumbnail_id = wp_insert_attachment( $attachment, $movefile['file'] );
 
-            // Include image.php
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-            // Generate the metadata for the attachment, and update the database record.
             $attach_data = wp_generate_attachment_metadata( $thumbnail_id, $movefile['file'] );
             wp_update_attachment_metadata( $thumbnail_id, $attach_data );
 
-            // Insert into patch_selections table
             $wpdb->insert(
                 $wpdb->prefix . 'patch_selections',
                 array(
@@ -278,10 +258,8 @@ function patch_selections_page() {
         }
     }
 
-    // Fetch all patch selections data
     $patch_selections = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}patch_selections" );
 
-    // Display the form and table
     ?>
     <div class="wrap">
         <h1>Patch Selections</h1>
@@ -343,44 +321,38 @@ function patch_selections_page() {
 }
 
 
-// Hook to add meta box
 add_action( 'add_meta_boxes', 'patch_maker_add_meta_box' );
 
 function patch_maker_add_meta_box() {
     add_meta_box(
-        'patch_selections_meta_box', // Meta box ID
-        'Patch Selections',          // Meta box Title
-        'patch_maker_meta_box_callback', // Callback function
-        'product',                   // Post type (for products)
-        'side'                       // Context (side, advanced, etc.)
+        'patch_selections_meta_box', 
+        'Patch Selections',          
+        'patch_maker_meta_box_callback',
+        'product',                  
+        'side'                      
     );
 
     add_meta_box(
-        'patch_display_meta_box',    // Meta box ID
-        'Display Patch Selections',  // Meta box Title
-        'patch_display_meta_box_callback', // Callback function
-        'product',                   // Post type (for products)
-        'side'                       // Context (side, advanced, etc.)
+        'patch_display_meta_box',   
+        'Display Patch Selections',  
+        'patch_display_meta_box_callback', 
+        'product',                   
+        'side'                       
     );
 }
 
-// Callback function for Patch Selections Meta Box
 function patch_maker_meta_box_callback( $post ) {
     global $wpdb;
 
-    // Retrieve saved patch selection if any
     $selected_patch_selection = get_post_meta( $post->ID, '_selected_patch_selection', true );
 
-    // Retrieve patch selections grouped by patch_type
     $patch_selections = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}patch_selections GROUP BY patch_type" );
 
-    // Group patch selections by patch_type
     $grouped_patch_selections = [];
     foreach ( $patch_selections as $selection ) {
         $grouped_patch_selections[ $selection->patch_type ][] = $selection;
     }
 
-    // Add nonce field for security
     wp_nonce_field( 'patch_selection_save', 'patch_selection_nonce' );
     ?>
     <label for="patch_selection">Select a Patch:</label>
@@ -388,7 +360,7 @@ function patch_maker_meta_box_callback( $post ) {
         <option value="">Select a Patch</option>
         <?php
         foreach ( $grouped_patch_selections as $type => $selections ) {
-            // echo '<optgroup label="' . esc_html( $type ) . '">';
+            
             foreach ( $selections as $selection ) {
                 ?>
                 <option value="<?php echo esc_attr( $selection->patch_type ); ?>" <?php selected( $selected_patch_selection, $selection->patch_type ); ?>>
@@ -403,16 +375,13 @@ function patch_maker_meta_box_callback( $post ) {
     <?php
 }
 
-// Callback function for Display Patch Selections Meta Box
 function patch_display_meta_box_callback( $post ) {
-    // Retrieve saved display option
     $display_option = get_post_meta( $post->ID, '_display_patch_selections', true );
 
 	$render_option = get_post_meta( $post->ID, '_render_patch_selections', true );
 	
 	$logosizing_option = get_post_meta( $post->ID, '_logo_sizing', true );
 	
-    // Add nonce field for security
     wp_nonce_field( 'patch_display_save', 'patch_display_nonce' );
     ?>
     <p>
@@ -434,11 +403,10 @@ function patch_display_meta_box_callback( $post ) {
     <?php
 }
 
-// Hook to save the meta box data
+
 add_action( 'save_post', 'patch_maker_save_meta_box_data' );
 
 function patch_maker_save_meta_box_data( $post_id ) {
-    // Check if our nonce is set.
     if ( isset( $_POST['patch_selection_nonce'] ) && ! wp_verify_nonce( $_POST['patch_selection_nonce'], 'patch_selection_save' ) ) {
         return $post_id;
     }
@@ -447,12 +415,11 @@ function patch_maker_save_meta_box_data( $post_id ) {
         return $post_id;
     }
 
-    // Don't save during autosave
+
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
         return $post_id;
     }
 
-    // Check the user's permissions.
     if ( 'product' == $_POST['post_type'] ) {
         if ( ! current_user_can( 'edit_post', $post_id ) ) {
             return $post_id;
@@ -461,13 +428,11 @@ function patch_maker_save_meta_box_data( $post_id ) {
         return $post_id;
     }
 
-    // Save the selected patch selection ID
     if ( isset( $_POST['patch_selection'] ) ) {
         $selected_patch_selection = sanitize_text_field( $_POST['patch_selection'] );
         update_post_meta( $post_id, '_selected_patch_selection', $selected_patch_selection );
     }
 
-    // Save the display option
     $display_patch_selections = isset( $_POST['display_patch_selections'] ) ? '1' : '0';
     update_post_meta( $post_id, '_display_patch_selections', $display_patch_selections );
 	
@@ -484,8 +449,6 @@ function add_image_field(){
 	 global $post;
 	
 
-
-	// Patch Image Upload Field
     echo '<p class="form-row form-row-wide">';
     echo '<label for="patch_image">' . __('Upload Logo', 'textdomain') . '</label>';
     echo '<input type="file" id="patch_image" name="patch_image" accept="image/*" />';
@@ -518,7 +481,6 @@ function add_image_field(){
     echo '</div>';
 }
 
-// Function for Validation
 
 function validate_image_data($passed, $product_id, $quantity) {
 	if (isset($_POST['image_data']) && empty($_POST['image_data'])) {
@@ -541,7 +503,6 @@ function save_image_data_custom_field($cart_item_data, $product_id) {
 		$cart_item_data['image_data'] = $image_url;
 	}
 	if (isset($_FILES['patch_image']) && !empty($_FILES['patch_image']['name'])) {
-        // Handle file upload
         $upload = wp_upload_bits($_FILES['patch_image']['name'], null, file_get_contents($_FILES['patch_image']['tmp_name']));
         if (!$upload['error']) {
             $cart_item_data['patch_image'] = $upload['url'];
@@ -578,7 +539,6 @@ function display_image_data_custom_fields_in_cart($item_data, $cart_item) {
 		$item_data[] = array(
 			'key'   => __('Image'),
 			'value' => '<img src="'.$cart_item['image_data'].'" />',
-// 			'value' => wc_clean($cart_item['image_data']),
 		);
 	}
 	if (isset($cart_item['patch_image'])) {
@@ -622,7 +582,6 @@ add_filter('woocommerce_get_item_data', 'display_image_data_custom_fields_in_car
 
 function replace_cart_item_thumbnail($thumbnail, $cart_item, $cart_item_key) {
     if (isset($cart_item['image_data']) && $cart_item['image_data']) {
-        // Replace the product thumbnail with the custom image
         $thumbnail = '<img src="' . esc_url($cart_item['image_data']) . '" alt="' . esc_attr__('Custom Image', 'your-textdomain') . '" />';
     }
     return $thumbnail;
@@ -655,13 +614,9 @@ function add_image_data_meta_to_order_items($item, $cart_item_key, $values, $ord
 add_action('woocommerce_checkout_create_order_line_item', 'add_image_data_meta_to_order_items', 10, 4);
 
 
-
-//NEED TO UPDATE FOR (PATCH TYPES)
-//Prepare data for frontend
 function get_data($type){
 	global $wpdb;
 	
-	        // Retrieve patch selections based on the selected patch ID
         $patch_selection = $wpdb->get_results( $wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}patch_selections WHERE patch_type = %s",
             $type
@@ -679,12 +634,9 @@ function get_data($type){
 } 
 
 
-//NEED TO UPDATE FOR (PATCH TYPES)
-// Function to display patch selections
 function display_patch_selections() {
     global $post, $wpdb;
 
-    // Retrieve the display option
     $display_option = get_post_meta( $post->ID, '_display_patch_selections', true );
 	$render_option = get_post_meta( $post->ID, '_render_patch_selections', true );
 	
@@ -695,10 +647,9 @@ function display_patch_selections() {
 		echo '</div>';
 	
     if ( $display_option === '1' ) {
-        // Retrieve selected patch ID
+        
         $selected_patch_id = get_post_meta( $post->ID, '_selected_patch_selection', true );
 
-        // Retrieve patch selections based on the selected patch ID
         $patch_selection = $wpdb->get_row( $wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}patch_selections WHERE patch_type = %d",
             $selected_patch_id
@@ -709,7 +660,7 @@ function display_patch_selections() {
 		));
 
         if ( $patch_selection ) {
-            // Retrieve all patches of the same type
+            
             if($selected_patch_selection=="Color"){
 				$patches = $wpdb->get_results( $wpdb->prepare(
 					"SELECT * FROM {$wpdb->prefix}patch_options WHERE type = %s",
@@ -744,56 +695,48 @@ function display_patch_selections() {
 				
             }
 			
-			// Retrieve all shape according to Patch Type
+
 			$shape = "Shape";
 			
 			if($selected_patch_selection=="Color"){
 				$color_patch_sels_dk = "Crest,Diamond,Arrow,Circle,Georgia,Rectangle,Oval,Texas,Hexagon,Shield";
 
-				// Split the string into an array
+				
 				$shapes_array = explode(',', $color_patch_sels_dk);
 				$placeholders = implode(',', array_fill(0, count($shapes_array), '%s'));
 
-				// Prepare the query
 				$query = $wpdb->prepare(
 					"SELECT * FROM {$wpdb->prefix}patch_options WHERE type = %s AND `key` IN ($placeholders)",
 					array_merge([$shape], $shapes_array)
 				);
 
-				// Execute the query
 				$patch_shapes = $wpdb->get_results($query);
 
 			}
 			else if($selected_patch_selection=="Stitch"){
 				$stitch_patch_sels_dk = "Diamond,Hexagon,Oval,Arrow,Pocket,Rectangle,Circle,Square,Triangle";
 
-				// Split the string into an array
 				$shapes_array = explode(',', $stitch_patch_sels_dk);
 				$placeholders = implode(',', array_fill(0, count($shapes_array), '%s'));
 
-				// Prepare the query
 				$query = $wpdb->prepare(
 					"SELECT * FROM {$wpdb->prefix}patch_options WHERE type = %s AND `key` IN ($placeholders)",
 					array_merge([$shape], $shapes_array)
 				);
 
-				// Execute the query
 				$patch_shapes = $wpdb->get_results($query);
 			}
 			else{
 				$nostitch_patch_sels_dk = "Crest,Diamond,Georgia,Hexagon,Oval,Pocket,Rectangle,Circle,Shield,Square,Triangle,Texas";
-				
-				// Split the string into an array
+
 				$shapes_array = explode(',', $nostitch_patch_sels_dk);
 				$placeholders = implode(',', array_fill(0, count($shapes_array), '%s'));
 
-				// Prepare the query
 				$query = $wpdb->prepare(
 					"SELECT * FROM {$wpdb->prefix}patch_options WHERE type = %s AND `key` IN ($placeholders)",
 					array_merge([$shape], $shapes_array)
 				);
 
-				// Execute the query
 				$patch_shapes = $wpdb->get_results($query);
 			}
 			
@@ -816,9 +759,7 @@ function display_patch_selections() {
                     <?php
                 }
                 echo '</div>';
-// 				wp_localize_script( 'selection_handler', 'data', array(
-// 					'patch_shapes' => $patch_shapes,
-// 				));
+
             }
 			else{
 				echo 'No Shapes';
@@ -844,7 +785,7 @@ function display_patch_selections() {
 	
 }
 
-// Hook the function to display before the "Add to Cart" form
+
 add_action( 'woocommerce_before_single_variation', 'display_patch_selections' );
 
 
@@ -852,25 +793,20 @@ function upload_patch_image($image_b64){
 	$upload_dir = wp_upload_dir();
     $upload_path = $upload_dir['basedir'] . '/patch_uploads/';
 
-        // Ensure the directory exists, if not create it
         if (!file_exists($upload_path)) {
             wp_mkdir_p($upload_path);
         }
 
-        // Extract the base64 data and decode it
         $base64_image = $image_b64;
         $base64_image = str_replace('data:image/png;base64,', '', $base64_image);
         $base64_image = str_replace(' ', '+', $base64_image);
         $image_data = base64_decode($base64_image);
 
-        // Generate a unique filename
         $filename = uniqid() . '.png';
         $filepath = $upload_path . $filename;
 
-        // Save the image file
         file_put_contents($filepath, $image_data);
 
-        // Generate the image URL
         $image_url = $upload_dir['baseurl'] . '/patch_uploads/' . $filename;
 	
 		return $image_url;
